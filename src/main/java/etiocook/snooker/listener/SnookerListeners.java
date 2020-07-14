@@ -3,13 +3,11 @@ package etiocook.snooker.listener;
 import etiocook.snooker.Main;
 import etiocook.snooker.manager.SnookerManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -26,13 +24,20 @@ public class SnookerListeners implements Listener {
         Player player = event.getPlayer();
 
         if (main.getList().contains(player)) {
-            if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.WATER) {
+            if (player.getLocation().getBlock().isLiquid()) {
+                main.getList().remove(player);
 
-                Location location = new Location(Bukkit.getWorld("AuraF"), 0, 190, 0);
-                player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_DESTROY, 2L, 2L);
-                player.teleport(location);
-
+                player.performCommand("spawn");
+                player.getInventory().clear();
                 player.sendTitle("§e§lSnooker", "§7you were disqualified from the event");
+
+                if (main.getList().size() > 1) {
+                    Bukkit.broadcastMessage("§eperdeu 1");
+                    return;
+                }
+                for (Player winner : main.getList()) {
+                    Bukkit.broadcastMessage("§e" + winner.getName());
+                }
 
             }
         }
@@ -45,7 +50,7 @@ public class SnookerListeners implements Listener {
             Player player = (Player) event.getEntity();
 
             if (main.getList().contains(player)) {
-                if (!snookerManager.isHappening()) {
+                if (snookerManager.isHappening()) {
                     event.setCancelled(true);
 
                 }
@@ -79,5 +84,19 @@ public class SnookerListeners implements Listener {
             }
         }
     }
+
+    @EventHandler
+    public void hiy(EntityDamageByEntityEvent event) {
+
+        if (event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
+            Player player = (Player) event.getEntity(), target = (Player) event.getDamager();
+
+            if (main.getList().contains(player) && main.getList().contains(target)) {
+                if (target.getInventory().getItemInMainHand().getType() == Material.STICK) event.setDamage(0);
+            }
+        }
+
+    }
+
 
 }

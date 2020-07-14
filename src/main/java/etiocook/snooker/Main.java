@@ -1,7 +1,9 @@
 package etiocook.snooker;
 
+import etiocook.snooker.listener.SnookerListeners;
 import etiocook.snooker.utils.CiberConfig;
 import etiocook.snooker.utils.CommandManager;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,12 +28,6 @@ public final class Main extends JavaPlugin {
     public List<Player> getList() {
         return list;
     }
-    public boolean isState() {
-        return state;
-    }
-    public void setState(boolean state) {
-        this.state = state;
-    }
 
     CommandManager commandManager;
 
@@ -40,6 +36,8 @@ public final class Main extends JavaPlugin {
         setConfigurations(new CiberConfig(this,"configurations.yml"));
         configurations.saveDefaultConfig();
 
+        getCommand("sinuca").setExecutor(new SnookerCommand());
+        Bukkit.getServer().getPluginManager().registerEvents(new SnookerListeners(), this);
         commandManager = new CommandManager();
         new SnookerCommand();
 

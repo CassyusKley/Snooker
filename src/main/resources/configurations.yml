@@ -1,7 +1,10 @@
 amount-messages: 2
 timer: 10
+stick-level: 2
 start-message:
-  - "a"
-  - "b"
-  - "c"
-  - "h"
+  - "        &e&l&nSnooker"
+  - ""
+  - "&fPara entrar digite: &7/sinuca"
+  - "&fpremio: "
+  - "&fjogadores participando"
+  - ""

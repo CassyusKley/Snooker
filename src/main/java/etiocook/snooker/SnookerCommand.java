@@ -36,23 +36,24 @@ public class SnookerCommand implements CommandExecutor {
             if (args.length == 0) {
 
                 if (!main.getList().contains(player)) {
-                    List<ItemStack> inventoryItems = Stream.of(new ItemStack[][]{inventory.getContents(), inventory.getArmorContents()}).flatMap(Stream::of).collect(Collectors.toList());
-                    if (inventoryItems.stream().anyMatch(item -> (item != null && !item.getType().equals(Material.AIR)))) {
-                        player.sendMessage("§cLimpe seu inventario para participar do evento");
-                        return false;
-                    }
-                    if (!main.getList().contains(player)) {
-                        main.getList().add(player);
 
-                        Location location = new Location(Bukkit.getWorld("AuraF"), 0, 190, 0);
-                        player.teleport(location);
+                        List<ItemStack> inventoryItems = Stream.of(new ItemStack[][]{inventory.getContents(), inventory.getArmorContents()}).flatMap(Stream::of).collect(Collectors.toList());
+                        if (inventoryItems.stream().anyMatch(item -> (item != null && !item.getType().equals(Material.AIR)))) {
+                            player.sendMessage("§cLimpe seu inventario para participar do evento");
+                            return false;
+                        }
+                        if (!main.getList().contains(player)) {
+                            main.getList().add(player);
 
-                        ItemBuilder stick = new ItemBuilder(Material.STICK).unbreakable(true).enchant(Enchantment.KNOCKBACK, 2);
-                        inventory.setItem(0, stick.build());
-                        player.sendTitle("§e§lSnooker", "have been sucessfully teleported");
-                    }
+                            Location location = new Location(Bukkit.getWorld("AuraF"), -26, 19, -7.281);
+                            player.teleport(location);
+
+                            ItemBuilder stick = new ItemBuilder(Material.STICK).unbreakable(true).enchant(Enchantment.KNOCKBACK, main.getConfigurations().getInt("stick-level"));
+                            inventory.setItem(0, stick.build());
+                            player.sendTitle("§e§lSnooker", "have been sucessfully teleported");
+                        }
+
                 }
-
             }
 
             if (args.length == 1 && player.hasPermission("snooker.admin")) {
@@ -65,6 +66,8 @@ public class SnookerCommand implements CommandExecutor {
 
                     snookerManager.setState(true);
                     snookerManager.setRunning(true);
+                    snookerManager.setHappening(false);
+                    announce();
                     announcement();
                 }
                 if ("reload".equalsIgnoreCase(args[0]) || "recarregar".equalsIgnoreCase(args[0])) {
@@ -90,13 +93,12 @@ public class SnookerCommand implements CommandExecutor {
         this.scheduler = scheduler.scheduleSyncRepeatingTask(main, () -> {
             if (counter.getAndIncrement() <= configurations.getInt("amount-messages")) {
 
-                List<String> stringList = configurations.getConfiguration().getStringList("start-message");
-                stringList.forEach(msg -> Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg)));
+                announce();
                 return;
             }
 
             for (Player playerList : main.getList()) {
-                Location location = new Location(Bukkit.getWorld("AuraF"), 0, 190, 0);
+                Location location = new Location(Bukkit.getWorld("AuraF"), -1.905,4,-7.661);
                 playerList.teleport(location);
 
                 playerList.sendTitle("§e§lSnoooker", "§ayou were teleported to the event");
@@ -108,4 +110,9 @@ public class SnookerCommand implements CommandExecutor {
         }, time, time);
     }
 
+    protected void announce() {
+        CiberConfig configurations = main.getConfigurations();
+        List<String> stringList = configurations.getConfiguration().getStringList("start-message");
+        stringList.forEach(msg -> Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg)));
+    }
 }

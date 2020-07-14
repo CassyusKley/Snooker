@@ -7,9 +7,6 @@ public class SnookerManager {
     private boolean happening;
 
     public SnookerManager() {
-        this.happening = false;
-        this.state = false;
-        this.running = false;
     }
 
     public boolean isState() {
