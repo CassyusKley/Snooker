@@ -99,6 +99,7 @@ public class SnookerCommand implements CommandExecutor {
                 announce("start-message");
                 return;
             }
+
             for (Player playerList : main.getList()) {
                 Location location = new Location(Bukkit.getWorld("AuraF"), -1.905,4,-7.661);
                 playerList.teleport(location);
