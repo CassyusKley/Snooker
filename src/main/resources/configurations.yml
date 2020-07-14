@@ -1,0 +1,7 @@
+amount-messages: 2
+timer: 10
+start-message:
+  - "a"
+  - "b"
+  - "c"
+  - "h"

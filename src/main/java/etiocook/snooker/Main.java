@@ -1,5 +1,7 @@
 package etiocook.snooker;
 
+import etiocook.snooker.utils.CiberConfig;
+import etiocook.snooker.utils.CommandManager;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -8,17 +10,38 @@ import java.util.List;
 
 public final class Main extends JavaPlugin {
 
+    private CiberConfig configurations;
+    private boolean state;
     private final List<Player> list = new LinkedList<>();
     public static Main getInstance() {
         return getPlugin(Main.class);
     }
+
+    public CiberConfig getConfigurations() {
+        return configurations;
+    }
+    public void setConfigurations(CiberConfig configurations) {
+        this.configurations = configurations;
+    }
     public List<Player> getList() {
         return list;
     }
+    public boolean isState() {
+        return state;
+    }
+    public void setState(boolean state) {
+        this.state = state;
+    }
+
+    CommandManager commandManager;
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
+        setConfigurations(new CiberConfig(this,"configurations.yml"));
+        configurations.saveDefaultConfig();
+
+        commandManager = new CommandManager();
+        new SnookerCommand();
 
     }
 
