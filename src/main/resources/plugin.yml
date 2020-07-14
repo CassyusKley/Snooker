@@ -1,0 +1,5 @@
+name: ESnooker
+version: ${project.version}
+main: etiocook.snooker.Main
+authors: [eTioCooK]
+description:  Snooker event plugin
