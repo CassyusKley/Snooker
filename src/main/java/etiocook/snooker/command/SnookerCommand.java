@@ -72,7 +72,7 @@ public class SnookerCommand implements CommandExecutor {
                     snookerManager.setState(true);
                     snookerManager.setRunning(true);
                     snookerManager.setHappening(false);
-                    announce();
+                    announce("start-message");
                     announcement();
                 }
                 if ("reload".equalsIgnoreCase(args[0]) || "recarregar".equalsIgnoreCase(args[0])) {
@@ -96,10 +96,9 @@ public class SnookerCommand implements CommandExecutor {
 
         this.scheduler = scheduler.scheduleSyncRepeatingTask(main, () -> {
             if (counter.getAndIncrement() <= configurations.getInt("amount-messages")) {
-                announce();
+                announce("start-message");
                 return;
             }
-
             for (Player playerList : main.getList()) {
                 Location location = new Location(Bukkit.getWorld("AuraF"), -1.905,4,-7.661);
                 playerList.teleport(location);
@@ -109,23 +108,19 @@ public class SnookerCommand implements CommandExecutor {
             scheduler.cancelTask(this.scheduler);
             if (main.getList().size() <= 1) {
                 snookerManager.setState(false);
-
                 for (Player player : main.getList()) player.performCommand("spawn");
-                List<String> quitStrings = configurations.getConfiguration().getStringList("lack-of-player");
-                quitStrings.forEach(msg -> Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg)));
+                announce("lack-of-player");
                 return;
             }
-
-            List<String> quitStrings = configurations.getConfiguration().getStringList("quit-message");
-            quitStrings.forEach(msg -> Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg)));
+            announce("quit-message");
             snookerManager.setHappening(true);
 
         }, time, time);
     }
 
-    protected void announce() {
+    protected void announce(String configList) {
         CiberConfig configurations = main.getConfigurations();
-        List<String> stringList = configurations.getConfiguration().getStringList("start-message");
+        List<String> stringList = configurations.getConfiguration().getStringList(configList);
         stringList.forEach(msg -> Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg)));
     }
 }
