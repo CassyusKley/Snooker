@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 public class SnookerCommand implements CommandExecutor {
 
     final Main main = Main.getInstance();
+    final SnookerManager snookerManager = SnookerManager.getInstance();
     private int scheduler;
 
     @Override
@@ -31,7 +32,6 @@ public class SnookerCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             PlayerInventory inventory = player.getInventory();
-            SnookerManager snookerManager = new SnookerManager();
 
             if (args.length == 0) {
 
@@ -88,7 +88,6 @@ public class SnookerCommand implements CommandExecutor {
         AtomicInteger counter = new AtomicInteger();
         long time = configurations.getConfiguration().getInt("timer") * 20;
         BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-        SnookerManager snookerManager = new SnookerManager();
 
         this.scheduler = scheduler.scheduleSyncRepeatingTask(main, () -> {
             if (counter.getAndIncrement() <= configurations.getInt("amount-messages")) {

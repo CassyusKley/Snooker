@@ -2,9 +2,15 @@ package etiocook.snooker.manager;
 
 public class SnookerManager {
 
+    private static SnookerManager instance;
     private boolean state;
     private boolean running;
     private boolean happening;
+
+    public static SnookerManager getInstance() {
+        if (instance == null) instance = new SnookerManager();
+        return instance;
+    }
 
     public SnookerManager() {
     }
