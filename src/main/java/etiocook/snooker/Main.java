@@ -5,6 +5,7 @@ import etiocook.snooker.listener.SnookerListeners;
 import etiocook.snooker.utils.CiberConfig;
 import etiocook.snooker.utils.CommandManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -48,4 +49,9 @@ public final class Main extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
     }
-}
+
+    public String  getconfigString(String path) {
+       return this.getConfigurations().getString(ChatColor.translateAlternateColorCodes(
+                '&', path));
+    }
+ }

@@ -1,11 +1,17 @@
 package etiocook.snooker.manager;
 
+import org.bukkit.entity.Player;
+
+import java.util.LinkedList;
+import java.util.List;
+
 public class SnookerManager {
 
     private static SnookerManager instance;
     private boolean state;
     private boolean running;
     private boolean happening;
+    private List<Player> camaroteList = new LinkedList<>();
 
     public static SnookerManager getInstance() {
         if (instance == null) instance = new SnookerManager();
@@ -21,6 +27,14 @@ public class SnookerManager {
 
     public void setState(boolean state) {
         this.state = state;
+    }
+
+    public List<Player> getCamaroteList() {
+        return camaroteList;
+    }
+
+    public void setCamaroteList(List<Player> camaroteList) {
+        this.camaroteList = camaroteList;
     }
 
     public boolean isRunning() {

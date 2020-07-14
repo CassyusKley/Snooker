@@ -4,23 +4,35 @@ amount-messages: 2
 timer: 10
 # Nivel do encantamento do stick
 stick-level: 2
+# Todas mensagens do evento
+Messages:
+  winner: "&eThe player &6<player> &eWon the Event"
+  disqualified: "§7you were disqualified from the event"
+  pvp-waiting: "§cwhile waiting pvp is disabled"
+  commands-waiting: "§ccommands while in standby is disabled"
+  not-online: "&cthe event is not currently online"
+  teleported-waiting: "&7have been sucessfully teleported"
+  clear-inventory: "&cClear your inventory to attend the event"
+  players-disqualified: "&eThe participant &6 <player> &ehas been deleted"
+  in-camarote: "&cYou're already in the snooker box"
+  teleported-camarote: "§ayou were teleported to the cabin"
+  quit-camarote: "&CYou left the snooker box"
 
-not-online: "&cthe event is not currently online"
 start-message:
   - "        &e&l&nSnooker"
   - ""
   - "&fPara entrar digite: &7/sinuca"
   - "&fpremio: "
-  - "&fjogadores participando"
+  - "&fjogadores participando: &e<quantia>"
   - ""
 quit-message:
-  -  "here"
-  -  "here"
-  -  "here"
-  -  "here"
-  -  "here"
+  - "        &e&l&nSnooker"
+  - ""
+  - '&ePlayers no evento: &6<quantia>'
+  - '&ePremio: &6<premio>'
+  - '&cEvento Trancado'
 lack-of-player:
-  - ""
-  - ""
-  - ""
-  - ""
+  - ''
+  - '&cEvento Cancelado!'
+  - '&cMotivo: &4Falta de Players'
+  - ''
