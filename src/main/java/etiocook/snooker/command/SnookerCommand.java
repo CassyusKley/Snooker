@@ -1,5 +1,6 @@
-package etiocook.snooker;
+package etiocook.snooker.command;
 
+import etiocook.snooker.Main;
 import etiocook.snooker.manager.SnookerManager;
 import etiocook.snooker.utils.CiberConfig;
 import etiocook.snooker.utils.ItemBuilder;
@@ -34,11 +35,10 @@ public class SnookerCommand implements CommandExecutor {
             PlayerInventory inventory = player.getInventory();
 
             if (args.length == 0) {
-
                 if (!main.getList().contains(player)) {
 
                     if (!snookerManager.isState()) {
-                        player.sendMessage(main.getConfigurations().getString(ChatColor.translateAlternateColorCodes('&', "desligado")));
+                        player.sendMessage(main.getConfigurations().getString(ChatColor.translateAlternateColorCodes('&', "not-online")));
                         return false;
                     }
 
@@ -106,9 +106,18 @@ public class SnookerCommand implements CommandExecutor {
                 playerList.sendTitle("§e§lSnoooker", "§ayou were teleported to the event");
             }
 
+            scheduler.cancelTask(this.scheduler);
+            if (main.getList().size() <= 1) {
+                snookerManager.setState(false);
+
+                for (Player player : main.getList()) player.performCommand("spawn");
+                List<String> quitStrings = configurations.getConfiguration().getStringList("lack-of-player");
+                quitStrings.forEach(msg -> Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg)));
+                return;
+            }
+
             List<String> quitStrings = configurations.getConfiguration().getStringList("quit-message");
             quitStrings.forEach(msg -> Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg)));
-            scheduler.cancelTask(this.scheduler);
             snookerManager.setHappening(true);
 
         }, time, time);

@@ -1,5 +1,6 @@
 package etiocook.snooker;
 
+import etiocook.snooker.command.SnookerCommand;
 import etiocook.snooker.listener.SnookerListeners;
 import etiocook.snooker.utils.CiberConfig;
 import etiocook.snooker.utils.CommandManager;

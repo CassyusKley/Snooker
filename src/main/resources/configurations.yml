@@ -1,7 +1,11 @@
+# Quantidade de Anuncios
 amount-messages: 2
+# Tempo Entre os Anuncios (EM SEGUNDOS)
 timer: 10
+# Nivel do encantamento do stick
 stick-level: 2
-desligado: "desligando..."
+
+not-online: "&cthe event is not currently online"
 start-message:
   - "        &e&l&nSnooker"
   - ""
@@ -15,3 +19,8 @@ quit-message:
   -  "here"
   -  "here"
   -  "here"
+lack-of-player:
+  - ""
+  - ""
+  - ""
+  - ""
