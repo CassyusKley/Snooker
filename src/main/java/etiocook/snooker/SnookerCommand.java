@@ -37,6 +37,11 @@ public class SnookerCommand implements CommandExecutor {
 
                 if (!main.getList().contains(player)) {
 
+                    if (!snookerManager.isState()) {
+                        player.sendMessage(main.getConfigurations().getString(ChatColor.translateAlternateColorCodes('&', "desligado")));
+                        return false;
+                    }
+
                         List<ItemStack> inventoryItems = Stream.of(new ItemStack[][]{inventory.getContents(), inventory.getArmorContents()}).flatMap(Stream::of).collect(Collectors.toList());
                         if (inventoryItems.stream().anyMatch(item -> (item != null && !item.getType().equals(Material.AIR)))) {
                             player.sendMessage("§cLimpe seu inventario para participar do evento");
@@ -91,7 +96,6 @@ public class SnookerCommand implements CommandExecutor {
 
         this.scheduler = scheduler.scheduleSyncRepeatingTask(main, () -> {
             if (counter.getAndIncrement() <= configurations.getInt("amount-messages")) {
-
                 announce();
                 return;
             }
@@ -99,10 +103,11 @@ public class SnookerCommand implements CommandExecutor {
             for (Player playerList : main.getList()) {
                 Location location = new Location(Bukkit.getWorld("AuraF"), -1.905,4,-7.661);
                 playerList.teleport(location);
-
                 playerList.sendTitle("§e§lSnoooker", "§ayou were teleported to the event");
             }
 
+            List<String> quitStrings = configurations.getConfiguration().getStringList("quit-message");
+            quitStrings.forEach(msg -> Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg)));
             scheduler.cancelTask(this.scheduler);
             snookerManager.setHappening(true);
 

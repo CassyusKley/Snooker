@@ -1,6 +1,7 @@
 amount-messages: 2
 timer: 10
 stick-level: 2
+desligado: "desligando..."
 start-message:
   - "        &e&l&nSnooker"
   - ""
@@ -8,3 +9,9 @@ start-message:
   - "&fpremio: "
   - "&fjogadores participando"
   - ""
+quit-message:
+  -  "here"
+  -  "here"
+  -  "here"
+  -  "here"
+  -  "here"
