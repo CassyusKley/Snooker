@@ -4,10 +4,7 @@ import etiocook.snooker.Main;
 import etiocook.snooker.manager.SnookerManager;
 import etiocook.snooker.utils.CiberConfig;
 import etiocook.snooker.utils.ItemBuilder;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,6 +12,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.List;
@@ -38,13 +37,13 @@ public class SnookerCommand implements CommandExecutor {
                 if (!main.getList().contains(player)) {
 
                     if (!snookerManager.isState()) {
-                        player.sendMessage(main.getconfigString("Messages.not-online"));
+                        player.sendMessage(main.colorize("Messages.not-online"));
                         return false;
                     }
 
                         List<ItemStack> inventoryItems = Stream.of(new ItemStack[][]{inventory.getContents(), inventory.getArmorContents()}).flatMap(Stream::of).collect(Collectors.toList());
                         if (inventoryItems.stream().anyMatch(item -> (item != null && !item.getType().equals(Material.AIR)))) {
-                            player.sendMessage(main.getconfigString("clear-inventory"));
+                            player.sendMessage(main.colorize(main.getConfigurations().getString("Messages.clear-inventory")));
                             return false;
                         }
                         if (!main.getList().contains(player)) {
@@ -53,9 +52,12 @@ public class SnookerCommand implements CommandExecutor {
                             Location location = new Location(Bukkit.getWorld("AuraF"), -26, 19, -7.281);
                             player.teleport(location);
 
+                            if (main.getConfigurations().getBoolean("set-effects")) {
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 90 * 9000, 2));
+                            }
                             ItemBuilder stick = new ItemBuilder(Material.STICK).unbreakable(true).enchant(Enchantment.KNOCKBACK, main.getConfigurations().getInt("stick-level"));
                             inventory.setItem(0, stick.build());
-                            player.sendTitle("§e§lSnooker", main.getconfigString("teleported-waiting"));
+                            player.sendTitle("§e§lSnooker", main.colorize("teleported-waiting"));
                         }
 
                 }
@@ -69,13 +71,13 @@ public class SnookerCommand implements CommandExecutor {
 
                             Location location = new Location(Bukkit.getWorld("AuraF"), -26, 19, -7.281);
                             player.teleport(location);
-                            player.sendTitle("§e§lSnooker", main.getconfigString("Messages.teleported-camarote"));
+                            player.sendTitle("§e§lSnooker", main.colorize(main.getConfigurations().getString("Messages.teleported-camarote")));
                             return false;
                         }
                         snookerManager.getCamaroteList().remove(player);
                         Location location = new Location(Bukkit.getWorld("AuraF"), -26, 19, -7.281);
                         player.teleport(location);
-                        player.sendTitle("§e§lSnooker", main.getconfigString("Messages.quit-camarote"));
+                        player.sendTitle("§e§lSnooker", main.colorize(main.getConfigurations().getString("Messages.quit-camarote")));
                     }
 
                 }
@@ -122,7 +124,10 @@ public class SnookerCommand implements CommandExecutor {
             scheduler.cancelTask(this.scheduler);
             if (main.getList().size() <= 1) {
                 snookerManager.setState(false);
-                for (Player player : main.getList()) player.performCommand("spawn");
+                for (Player player : main.getList()) {
+                    player.performCommand("spawn");
+                    player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
+                }
                 announce("lack-of-player");
                 main.getList().clear();
                 return;

@@ -4,6 +4,8 @@ amount-messages: 2
 timer: 10
 # Nivel do encantamento do stick
 stick-level: 2
+# Dar efeito de speeed
+set-effects: true
 # Todas mensagens do evento
 Messages:
   winner: "&eThe player &6<player> &eWon the Event"
@@ -18,6 +20,14 @@ Messages:
   teleported-camarote: "§ayou were teleported to the cabin"
   quit-camarote: "&CYou left the snooker box"
 
+# Prmmio ao vencedor
+winnerReward:
+  - "money give <winner> 1"
+  - "p give <winner> 1200000"
+  - "say <winner>"
+  - "me <winner"
+
+# Mensagem ao iniciar
 start-message:
   - "        &e&l&nSnooker"
   - ""
@@ -25,12 +35,16 @@ start-message:
   - "&fpremio: "
   - "&fjogadores participando: &e<quantia>"
   - ""
+
+# Mensagem ao trancar o evento
 quit-message:
   - "        &e&l&nSnooker"
   - ""
   - '&ePlayers no evento: &6<quantia>'
   - '&ePremio: &6<premio>'
   - '&cEvento Trancado'
+
+# Mensagem ao ser cancelado por falta de player
 lack-of-player:
   - ''
   - '&cEvento Cancelado!'

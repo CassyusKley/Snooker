@@ -50,8 +50,7 @@ public final class Main extends JavaPlugin {
         // Plugin shutdown logic
     }
 
-    public String  getconfigString(String path) {
-       return this.getConfigurations().getString(ChatColor.translateAlternateColorCodes(
-                '&', path));
+    public String colorize(String path) {
+       return ChatColor.translateAlternateColorCodes('&', path);
     }
  }
