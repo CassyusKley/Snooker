@@ -37,13 +37,16 @@ public class SnookerListeners implements Listener {
                 player.sendTitle("§e§lSnooker", main.colorize(main.getConfigurations().getString("Messages.disqualified")));
 
                 if (main.getList().size() > 1) {
-                    Bukkit.broadcastMessage(main.colorize(main.getConfigurations().getString("Messages.players-disqualified").replace(
-                            "<player>", player.getName())
-                    ));
+                    main.getList().forEach(playersList -> playersList.sendMessage(
+                            main.colorize(main.getConfigurations().getString(
+                                    "Messages.players-disqualified").replace(
+                            "<player>", player.getName())))
+                    );
                     return;
                 }
                 for (Player winner : main.getList()) {
                     snookerManager.setState(false);
+                    snookerManager.setCamarote(false);
                     Bukkit.broadcastMessage(main.colorize(main.getConfigurations().getString("Messages.winner").
                             replace("<player>", winner.getName()))
                     );
@@ -58,7 +61,7 @@ public class SnookerListeners implements Listener {
 
                         winner.performCommand("spawn");
                         main.getList().clear();
-                        winner.sendMessage("saiu");
+                        winner.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
                         for (String rewards : main.getConfigurations().getConfiguration().getStringList("winnerReward")) {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), rewards.replace("<winner>", winner.getName()));
                         }
@@ -144,7 +147,7 @@ public class SnookerListeners implements Listener {
         }
     }
 
-    @EventHandler
+ /*   @EventHandler
     public void health(EntityRegainHealthEvent event) {
         Player player = (Player) event.getEntity();
         if (main.getList().contains(player)) {
@@ -152,6 +155,6 @@ public class SnookerListeners implements Listener {
 
         }
 
-    }
+    }*/
 
 }

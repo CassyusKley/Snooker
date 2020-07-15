@@ -11,6 +11,7 @@ public class SnookerManager {
     private boolean state;
     private boolean running;
     private boolean happening;
+    private boolean camarote;
     private List<Player> camaroteList = new LinkedList<>();
 
     public static SnookerManager getInstance() {
@@ -51,5 +52,13 @@ public class SnookerManager {
 
     public void setHappening(boolean happening) {
         this.happening = happening;
+    }
+
+    public boolean isCamarote() {
+        return camarote;
+    }
+
+    public void setCamarote(boolean camarote) {
+        this.camarote = camarote;
     }
 }

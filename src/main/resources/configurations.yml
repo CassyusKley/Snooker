@@ -1,7 +1,12 @@
+# true = ligado, false = desligado
+autostart: true
+autostart-timer: 60 # 60 = 1 minuto
 # Quantidade de Anuncios
 amount-messages: 2
 # Tempo Entre os Anuncios (EM SEGUNDOS)
 timer: 10
+# Limite de vagas
+players-limite: 30
 # Nivel do encantamento do stick
 stick-level: 2
 # Dar efeito de speeed
@@ -15,25 +20,24 @@ Messages:
   not-online: "&cthe event is not currently online"
   teleported-waiting: "&7have been sucessfully teleported"
   clear-inventory: "&cClear your inventory to attend the event"
-  players-disqualified: "&eThe participant &6 <player> &ehas been deleted"
+  players-disqualified: "&eThe participant &6<player> &ehas been deleted"
   in-camarote: "&cYou're already in the snooker box"
   teleported-camarote: "§ayou were teleported to the cabin"
+  camarote-off: "§cthe event has not yet started"
   quit-camarote: "&CYou left the snooker box"
+  players-limite: "&cthe event has already reached its limit of players"
 
 # Prmmio ao vencedor
 winnerReward:
   - "money give <winner> 1"
-  - "p give <winner> 1200000"
-  - "say <winner>"
-  - "me <winner"
-
+  - "p give <winner> 120"
 # Mensagem ao iniciar
 start-message:
   - "        &e&l&nSnooker"
   - ""
   - "&fPara entrar digite: &7/sinuca"
   - "&fpremio: "
-  - "&fjogadores participando: &e<quantia>"
+  - "&fjogadores participando: &e<amount>/<amountMax>"
   - ""
 
 # Mensagem ao trancar o evento

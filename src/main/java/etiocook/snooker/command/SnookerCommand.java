@@ -25,7 +25,6 @@ public class SnookerCommand implements CommandExecutor {
 
     final Main main = Main.getInstance();
     final SnookerManager snookerManager = SnookerManager.getInstance();
-    private int scheduler;
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -37,7 +36,7 @@ public class SnookerCommand implements CommandExecutor {
                 if (!main.getList().contains(player)) {
 
                     if (!snookerManager.isState()) {
-                        player.sendMessage(main.colorize("Messages.not-online"));
+                        player.sendMessage(main.colorize(main.getConfigurations().getString("Messages.not-online")));
                         return false;
                     }
 
@@ -47,14 +46,22 @@ public class SnookerCommand implements CommandExecutor {
                             return false;
                         }
                         if (!main.getList().contains(player)) {
+
+                            if (main.getList().size() == main.getConfigurations().getInt("players-limite")) {
+                                player.sendMessage(main.colorize(main.getConfigurations().getString("Messages.players-limite")));
+                                return false;
+                            }
+
                             main.getList().add(player);
 
-                            Location location = new Location(Bukkit.getWorld("AuraF"), -26, 19, -7.281);
+                            Location location = new Location(Bukkit.getWorld("Eventos"), 51,19,-67,(float)-88.2,(float)0.2);
                             player.teleport(location);
+                            player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
 
                             if (main.getConfigurations().getBoolean("set-effects")) {
                                 player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 90 * 9000, 2));
                             }
+
                             ItemBuilder stick = new ItemBuilder(Material.STICK).unbreakable(true).enchant(Enchantment.KNOCKBACK, main.getConfigurations().getInt("stick-level"));
                             inventory.setItem(0, stick.build());
                             player.sendTitle("§e§lSnooker", main.colorize("teleported-waiting"));
@@ -64,8 +71,8 @@ public class SnookerCommand implements CommandExecutor {
             }
 
             if (args.length == 1) {
-                if ("camarote".equalsIgnoreCase(args[0])) {
-                    if (snookerManager.isState()) {
+               if ("camarote".equalsIgnoreCase(args[0])) {
+                    if (snookerManager.isCamarote()) {
                         if (!snookerManager.getCamaroteList().contains(player)) {
                             snookerManager.getCamaroteList().add(player);
 
@@ -75,11 +82,13 @@ public class SnookerCommand implements CommandExecutor {
                             return false;
                         }
                         snookerManager.getCamaroteList().remove(player);
-                        Location location = new Location(Bukkit.getWorld("AuraF"), -26, 19, -7.281);
-                        player.teleport(location);
-                        player.sendTitle("§e§lSnooker", main.colorize(main.getConfigurations().getString("Messages.quit-camarote")));
-                    }
 
+                        player.performCommand("spawn");
+                        player.sendTitle("§e§lSnooker", main.colorize(main.getConfigurations().getString("Messages.quit-camarote")));
+
+                        return false;
+                    }
+                    player.sendMessage(main.colorize(main.getConfigurations().getString("MEssages.camarote-off")));
                 }
 
                 if (player.hasPermission("snooker.admin")) {
@@ -94,7 +103,7 @@ public class SnookerCommand implements CommandExecutor {
                         snookerManager.setRunning(true);
                         snookerManager.setHappening(false);
                         announce("start-message");
-                        announcement();
+                        main.announcement();
                     }
                     if ("reload".equalsIgnoreCase(args[0]) || "recarregar".equalsIgnoreCase(args[0])) {
                         main.getConfigurations().reloadConfig();
@@ -109,48 +118,13 @@ public class SnookerCommand implements CommandExecutor {
         return false;
     }
 
-    protected void announcement() {
-        CiberConfig configurations = main.getConfigurations();
-        AtomicInteger counter = new AtomicInteger();
-        long time = configurations.getConfiguration().getInt("timer") * 20;
-        BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-
-        this.scheduler = scheduler.scheduleSyncRepeatingTask(main, () -> {
-            if (counter.getAndIncrement() <= configurations.getInt("amount-messages")) {
-                announce("start-message");
-                return;
-            }
-
-            scheduler.cancelTask(this.scheduler);
-            if (main.getList().size() <= 1) {
-                snookerManager.setState(false);
-                for (Player player : main.getList()) {
-                    player.performCommand("spawn");
-                    player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
-                }
-                announce("lack-of-player");
-                main.getList().clear();
-                return;
-            }
-
-            for (Player playerList : main.getList()) {
-                Location location = new Location(Bukkit.getWorld("AuraF"), -1.905,4,-7.661);
-                playerList.teleport(location);
-                playerList.sendTitle("§e§lSnoooker", "§ayou were teleported to the event");
-            }
-
-            announce("quit-message");
-            snookerManager.setHappening(true);
-
-        }, time, time);
-    }
-
     protected void announce(String configList) {
         CiberConfig configurations = main.getConfigurations();
         List<String> stringList = configurations.getConfiguration().getStringList(configList);
         stringList.forEach(msg -> Bukkit.broadcastMessage(
                 ChatColor.translateAlternateColorCodes('&', msg).
-                replace("<quantia>", "" + main.getList().size()))
+                replace("<amount>", "" + main.getList().size()).
+                replace("<amountMax>", "" + main.getConfigurations().getInt("players-limite")))
         );
     }
 }
