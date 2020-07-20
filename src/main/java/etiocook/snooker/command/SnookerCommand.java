@@ -39,14 +39,12 @@ public class SnookerCommand implements CommandExecutor {
                         player.sendMessage(main.colorize(main.getConfigurations().getString("Messages.not-online")));
                         return false;
                     }
-
                         List<ItemStack> inventoryItems = Stream.of(new ItemStack[][]{inventory.getContents(), inventory.getArmorContents()}).flatMap(Stream::of).collect(Collectors.toList());
                         if (inventoryItems.stream().anyMatch(item -> (item != null && !item.getType().equals(Material.AIR)))) {
                             player.sendMessage(main.colorize(main.getConfigurations().getString("Messages.clear-inventory")));
                             return false;
                         }
                         if (!main.getList().contains(player)) {
-
                             if (main.getList().size() == main.getConfigurations().getInt("players-limite")) {
                                 player.sendMessage(main.colorize(main.getConfigurations().getString("Messages.players-limite")));
                                 return false;
@@ -60,6 +58,7 @@ public class SnookerCommand implements CommandExecutor {
 
                             if (main.getConfigurations().getBoolean("set-effects")) {
                                 player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 90 * 9000, 2));
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 90 * 9000, 2));
                             }
 
                             ItemBuilder stick = new ItemBuilder(Material.STICK).unbreakable(true).enchant(Enchantment.KNOCKBACK, main.getConfigurations().getInt("stick-level"));
@@ -76,7 +75,7 @@ public class SnookerCommand implements CommandExecutor {
                         if (!snookerManager.getCamaroteList().contains(player)) {
                             snookerManager.getCamaroteList().add(player);
 
-                            Location location = new Location(Bukkit.getWorld("AuraF"), -26, 19, -7.281);
+                            Location location = new Location(Bukkit.getWorld("Eventos"),72,18,-68);
                             player.teleport(location);
                             player.sendTitle("§e§lSnooker", main.colorize(main.getConfigurations().getString("Messages.teleported-camarote")));
                             return false;

@@ -10,7 +10,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
@@ -56,8 +58,8 @@ public class SnookerListeners implements Listener {
                     snookerManager.getCamaroteList().forEach(playerCamarote -> playerCamarote.performCommand("spawn"));
                     snookerManager.getCamaroteList().clear();
 
-                    winner.sendMessage("Você será teleportado para o spawn em 15 segundos");
-                    winner.getServer().getScheduler().runTaskLaterAsynchronously(main, () -> {
+                    winner.sendMessage("§aVocê será teleportado para o spawn em 15 segundos");
+                    winner.getServer().getScheduler().runTaskLater(main, () -> {
 
                         winner.performCommand("spawn");
                         main.getList().clear();
@@ -87,7 +89,21 @@ public class SnookerListeners implements Listener {
             }
         }
     }*/
+ @EventHandler
+ public void click(InventoryClickEvent e) {
 
+     Player player = (Player) e.getWhoClicked();
+     if (main.getList().contains(player)) e.setCancelled(true);
+
+ }
+
+    @EventHandler
+    public void click(PlayerDropItemEvent e) {
+
+        Player player = e.getPlayer();
+        if (main.getList().contains(player)) e.setCancelled(true);
+
+    }
     @EventHandler
     public void commands(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
@@ -109,6 +125,7 @@ public class SnookerListeners implements Listener {
     public void quit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
+        if (snookerManager.getCamaroteList().contains(player)) snookerManager.getCamaroteList().remove(player);
         if (main.getList().contains(player)) {
             main.getList().remove(player);
 
