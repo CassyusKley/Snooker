@@ -39,7 +39,6 @@ start-message:
   - "&fpremio: "
   - "&fjogadores participando: &e<amount>/<amountMax>"
   - ""
-
 # Mensagem ao trancar o evento
 quit-message:
   - "        &e&l&nSnooker"
@@ -47,7 +46,6 @@ quit-message:
   - '&ePlayers no evento: &6<quantia>'
   - '&ePremio: &6<premio>'
   - '&cEvento Trancado'
-
 # Mensagem ao ser cancelado por falta de player
 lack-of-player:
   - ''

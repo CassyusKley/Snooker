@@ -86,7 +86,6 @@ public final class Main extends JavaPlugin {
                 announce("start-message");
                 return;
             }
-
             scheduler.cancelTask(this.scheduler);
             if ( this.getList().size() <= 1) {
                 snookerManager.setState(false);
@@ -98,13 +97,11 @@ public final class Main extends JavaPlugin {
                 this.getList().clear();
                 return;
             }
-
             for (Player playerList :  this.getList()) {
                 Location location = new Location(Bukkit.getWorld("Eventos"), 70, 4, -67);
                 playerList.teleport(location);
                 playerList.sendTitle("§e§lSnoooker", "§ayou were teleported to the event");
             }
-
             announce("quit-message");
             snookerManager.setHappening(true);
             snookerManager.setState(false);

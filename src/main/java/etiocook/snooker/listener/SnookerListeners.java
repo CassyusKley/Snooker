@@ -2,6 +2,7 @@ package etiocook.snooker.listener;
 
 import etiocook.snooker.Main;
 import etiocook.snooker.manager.SnookerManager;
+import etiocook.snooker.utils.CiberConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,8 +17,11 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
+import java.util.Set;
+
 
 public class SnookerListeners implements Listener {
 
@@ -27,16 +31,16 @@ public class SnookerListeners implements Listener {
     @EventHandler
     public void move(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+        CiberConfig config = main.getConfigurations();
 
         if (main.getList().contains(player)) {
             if (player.getLocation().getBlock().isLiquid()) {
                 main.getList().remove(player);
-                // Removendo todas efeitos de poção do jogador
                 player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
 
                 player.performCommand("spawn");
                 player.getInventory().clear();
-                player.sendTitle("§e§lSnooker", main.colorize(main.getConfigurations().getString("Messages.disqualified")));
+                player.sendTitle("§e§lSnooker", main.colorize(config.getString("Messages.disqualified")));
 
                 if (main.getList().size() > 1) {
                     main.getList().forEach(playersList -> playersList.sendMessage(
@@ -49,26 +53,26 @@ public class SnookerListeners implements Listener {
                 for (Player winner : main.getList()) {
                     snookerManager.setState(false);
                     snookerManager.setCamarote(false);
-                    Bukkit.broadcastMessage(main.colorize(main.getConfigurations().getString("Messages.winner").
-                            replace("<player>", winner.getName()))
-                    );
+                    Bukkit.broadcastMessage(main.colorize(config.getString("Messages.winner").replace("<player>", winner.getName())));
 
                     winner.getInventory().clear();
-                    winner.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
+                    winner.getActivePotionEffects().forEach(potionEffect -> winner.removePotionEffect(potionEffect.getType()));
                     snookerManager.getCamaroteList().forEach(playerCamarote -> playerCamarote.performCommand("spawn"));
                     snookerManager.getCamaroteList().clear();
 
                     winner.sendMessage("§aVocê será teleportado para o spawn em 15 segundos");
-                    winner.getServer().getScheduler().runTaskLater(main, () -> {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            winner.performCommand("spawn");
 
-                        winner.performCommand("spawn");
-                        main.getList().clear();
-                        winner.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
-                        for (String rewards : main.getConfigurations().getConfiguration().getStringList("winnerReward")) {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), rewards.replace("<winner>", winner.getName()));
+                            List<String> rewards = config.getConfiguration().getStringList("winnerReward");
+                            rewards.forEach(reward -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), reward.replace("<winner>", winner.getName())));
+
+                            main.getList().clear();
+                            cancel();
                         }
-
-                    }, 20 * 15);
+                    }.runTaskLaterAsynchronously(main,20 * 15);
                 }
 
             }
